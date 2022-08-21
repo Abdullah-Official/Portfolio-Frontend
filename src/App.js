@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
 
-function App() {
+import { About, Footer, Header, Skills, Testimonial, Work } from "./container";
+import { Navbar } from "./components";
+import "./App.scss";
+import { client } from "./client";
+
+const App = () => {
+  let [testimonials, setTestimonials] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    const query = '*[_type == "testimonials"]';
+    const brandsQuery = '*[_type == "brands"]';
+
+    client.fetch(query).then((data) => {
+      setTestimonials(data);
+    });
+
+    client.fetch(brandsQuery).then((data) => {
+      setBrands(data);
+    });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Navbar />
+      <Header />
+      <About />
+      <Work />
+      <Skills />
+      {testimonials?.length && brands?.length ? <Testimonial /> : null}
+      <Footer />
     </div>
   );
-}
+};
 
 export default App;
